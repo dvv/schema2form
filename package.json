@@ -1,0 +1,16 @@
+{
+	"name": "schema2form",
+	"author": "Vladimir Dronnikov <dronnikov@gmail.com>",
+	"contributors": [],
+	"keywords": [
+		"json",
+		"schema",
+		"html",
+		"form"
+	],
+	"mappings": {
+	},
+	"githubName": "schema2form",
+	"type": "zip",
+	"location": "http://github.com/dvv/schema2form/zipball/master"
+}
