@@ -94,20 +94,24 @@ function obj2form(schema, data, path, entity){
 			'></div>');
 		// enum?
 		} else if (schema['enum']) {
-			s.push('<select type="' + type + '" data-type="' + type + '" name="' + path + '">');
-			// TODO: lazy fetch from DB?
-			var options = schema['enum'];
-			//if (schema.$ref)
-			s.push('<option></option>'); // null option
-			// TODO: value of option?
-			//for (var i in options) if (options.hasOwnProperty(i)) { var option = options[i];
-			$.each(options, function(index, option){
-				var value = option && option.id || option;
-				var title = option && option.name || option;
-				//s.push('<option value="' + i + '" ' + putAttr(data === i, 'selected') + '>' + option + '</option>');
-				s.push('<option ' + putAttr(data === value, 'selected') + '>' + title + '</option>');
-			});
-			s.push('</select>');
+			if (schema.format === 'tag') {
+				//putAttr(schema.format, schema.format === 'tag' ? 'data-tags') +
+			} else {
+				s.push('<select type="' + type + '" data-type="' + type + '" name="' + path + '">');
+				// TODO: lazy fetch from DB?
+				var options = schema['enum'];
+				//if (schema.$ref)
+				s.push('<option></option>'); // null option
+				// TODO: value of option?
+				//for (var i in options) if (options.hasOwnProperty(i)) { var option = options[i];
+				$.each(options, function(index, option){
+					var value = option && option.id || option;
+					var title = option && option.name || option;
+					//s.push('<option value="' + i + '" ' + putAttr(data === i, 'selected') + '>' + option + '</option>');
+					s.push('<option ' + putAttr(data === value, 'selected') + '>' + title + '</option>');
+				});
+				s.push('</select>');
+			}
 		} else if (t === 'string' && (schema.format === 'html' || schema.format === 'js')) {
 			// put textarea
 			// TODO: required
@@ -171,5 +175,21 @@ function initFormArrays(){
 			if (c.length)
 				c.after(p.detach());
 		}
+	});
+}
+
+/*
+ * Power up dynamic tag suggests
+ *
+ * To be called from $(document).ready(...)
+ */
+function initTagSuggests(){
+	//$('form input[type=text]').tagSuggest({tags: ['a', 'vv', 'bbb']});
+	$('form input[type=text]').autocomplete(['a', 'vv', 'bbb'], {
+		matchContains: true,
+		minChars: 0,
+		multiple: true,
+		mustMatch: true,
+		autoFill: true
 	});
 }
