@@ -28,6 +28,8 @@ function obj2form(schema, data, path, entity){
 	function putAttr(value, attr){
 		return value ? attr + '="' + (value === true ? attr : value) + '" ' : '';
 	}
+	// FIXME: way rude
+	if (schema.readonly) return;
 	if (!path) path = 'data';
 	var s = [];
 	if (schema.type === 'object' || schema.$ref instanceof Object || schema.type === 'array') {
@@ -58,10 +60,10 @@ function obj2form(schema, data, path, entity){
 				// add/delete
 				// TODO: configurable text
 				s.push('<div class="array-action">');
-				s.push('<a class="array-action" rel="clone" href="#">'+T(entity+'_array_clone')+'</a>');
-				s.push('<a class="array-action" rel="remove" href="#">'+T(entity+'_array_remove')+'</a>');
-				s.push('<a class="array-action" rel="moveup" href="#">'+T(entity+'_array_moveup')+'</a>');
-				s.push('<a class="array-action" rel="movedown" href="#">'+T(entity+'_array_movedown')+'</a>');
+				s.push('<a class="array-action" rel="clone" href="#">'+_.T(entity+'_array_clone')+'</a>');
+				s.push('<a class="array-action" rel="remove" href="#">'+_.T(entity+'_array_remove')+'</a>');
+				s.push('<a class="array-action" rel="moveup" href="#">'+_.T(entity+'_array_moveup')+'</a>');
+				s.push('<a class="array-action" rel="movedown" href="#">'+_.T(entity+'_array_movedown')+'</a>');
 				s.push('</div>');
 				s.push('</li>');
 			}
@@ -71,7 +73,7 @@ function obj2form(schema, data, path, entity){
 	} else {
 		s.push('<div class="field">');
 		//if (schema.title)
-			s.push('<label>' + T(entity+'_'+(schema.title||path)) + '</label>');
+			s.push('<label>' + _.T(entity+'_'+(schema.title||path)) + '</label>');
 		var t, type = 'text';
 		var pattern = schema.pattern;
 		if ((t = schema.type) === 'number' || t === 'integer') {
@@ -126,7 +128,7 @@ function obj2form(schema, data, path, entity){
 			//s.push('<input type="' + type + '" data-type="' + type + '" name="' + path + '" ' +
 				putAttr(data && path === 'data[id]', 'readonly') +
 				putAttr(schema.description, 'title') +
-				putAttr(T(entity+'_'+(schema.title||path)), 'placeholder') +
+				putAttr(_.T(entity+'_'+(schema.title||path)), 'placeholder') +
 				//putAttr(schema.optional !== true, 'required') +
 				putAttr(schema.minLength, 'minlength') +
 				putAttr(schema.maxLength, 'maxlength') +
