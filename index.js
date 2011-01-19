@@ -83,8 +83,8 @@ function obj2form(schema, data, path, entity){
 			// TODO: Date or String?!!!
 			type = 'isodate';
 			//data = Date.fromDB(data);
-		} else if (t === 'boolean') {
-			type = 'checkbox';
+		//} else if (t === 'boolean') {
+		//	type = 'checkbox';
 		} else if (schema.format === 'email' || schema.format === 'url' || schema.format === 'password') {
 			type = schema.format;
 			if (type === 'password') data = undefined;
@@ -120,6 +120,12 @@ function obj2form(schema, data, path, entity){
 			s.push('<textarea name="' + path + '" data-format="' + schema.format + '">');
 			s.push(data ? $.encode(data) : data);
 			s.push('</textarea>');
+		} else if (t === 'boolean') {
+			s.push('<select data-type="' + type + '" name="' + path + '">');
+			s.push('<option value=""></option>'); // null option
+			s.push('<option value="true"' + (data === true ? ' selected="selected"' : '') + '>' + _.T('yes') + '</option>');
+			s.push('<option value="false"' + (data === false ? ' selected="selected"' : '') + '>' + _.T('no') + '</option>');
+			s.push('</select>');
 		} else {
 			// put input
 			//// date means datetime-local
