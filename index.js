@@ -92,7 +92,7 @@ function obj2form(schema, data, path, entity){
 		// lookup field?
 		if (schema.format && schema.format.indexOf('@') >= 0 && path !== 'data[id]') {
 			s.push('<div class="combo" id="' + path + '" rel="' + schema.format + '" ' +
-				putAttr(data ? $.encode(data) : data, 'value') +
+				putAttr(data ? _.escapeHTML(data) : data, 'value') +
 			'></div>');
 		// enum?
 		} else if (schema['enum']) {
@@ -118,7 +118,7 @@ function obj2form(schema, data, path, entity){
 			// put textarea
 			// TODO: required
 			s.push('<textarea name="' + path + '" data-format="' + schema.format + '">');
-			s.push(data ? $.encode(data) : data);
+			s.push(data ? _.escapeHTML(data) : data);
 			s.push('</textarea>');
 		} else if (t === 'boolean') {
 			s.push('<select data-type="' + type + '" name="' + path + '">');
@@ -144,7 +144,7 @@ function obj2form(schema, data, path, entity){
 				// checkboxes are controlled via .checked, not value
 				// dates also quirky
 				//putAttr(data, type === 'checkbox' ? 'checked' : (type === 'date' ? 'data-value' : 'value')) +
-				putAttr(data ? $.encode(data) : data, type === 'checkbox' ? 'checked' : 'value') +
+				putAttr(data ? _.escapeHTML(data) : data, type === 'checkbox' ? 'checked' : 'value') +
 			'/>');
 		}
 		s.push('</div>');
