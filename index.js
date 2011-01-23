@@ -34,9 +34,9 @@ function obj2form(schema, data, path, entity, flavor){
 	if (!path) path = 'data';
 	var s = [];
 	if (schema.type === 'object' || schema.$ref instanceof Object || schema.type === 'array') {
-		s.push('<fieldset ' + putAttr(_.T(schema.description||'formEdit'+entity), 'title') + '>');
+		s.push('<fieldset ' + putAttr(_.T(schema.description||'form'+entity), 'title') + '>');
 		if (schema.title)
-			s.push('<legend>' + _.T('formEdit'+schema.title) + '</legend>');
+			s.push('<legend>' + _.T('form'+schema.title) + '</legend>');
 		// object
 		if (schema.type === 'object' || schema.$ref instanceof Object) {
 			if (schema.$ref instanceof Object) {
@@ -59,10 +59,10 @@ function obj2form(schema, data, path, entity, flavor){
 				// add/delete
 				// TODO: configurable text
 				s.push('<div class="array-action">');
-				s.push('<a class="array-action" rel="clone" href="#">'+_.T('formEditArrayClone')+'</a>');
-				s.push('<a class="array-action" rel="remove" href="#">'+_.T('formEditArrayRemove')+'</a>');
-				s.push('<a class="array-action" rel="moveup" href="#">'+_.T('formEditArrayMoveUp')+'</a>');
-				s.push('<a class="array-action" rel="movedown" href="#">'+_.T('formEditArrayMoveDown')+'</a>');
+				s.push('<a class="array-action" rel="clone" href="#">'+_.T('formArrayClone')+'</a>');
+				s.push('<a class="array-action" rel="remove" href="#">'+_.T('formArrayRemove')+'</a>');
+				s.push('<a class="array-action" rel="moveup" href="#">'+_.T('formArrayMoveUp')+'</a>');
+				s.push('<a class="array-action" rel="movedown" href="#">'+_.T('formArrayMoveDown')+'</a>');
 				s.push('</div>');
 				s.push('</li>');
 			}
@@ -71,7 +71,7 @@ function obj2form(schema, data, path, entity, flavor){
 		s.push('</fieldset>');
 	} else {
 		s.push('<div class="field">');
-		var label = 'formEdit'+entity+(path.replace('data','').replace(/\[(\w*)\]/g, function(hz, x){return x ? _.capitalize(x) : ''}));
+		var label = 'form'+entity+(path.replace('data','').replace(/\[(\w*)\]/g, function(hz, x){return x ? _.capitalize(x) : ''}));
 		s.push('<label>' + _.T(label) + '</label>');
 		var t, type = 'text';
 		var pattern = schema.pattern;
@@ -109,6 +109,7 @@ function obj2form(schema, data, path, entity, flavor){
 					var value = option && option.id || option;
 					var title = option && option.name || option;
 					//s.push('<option value="' + i + '" ' + putAttr(data === i, 'selected') + '>' + option + '</option>');
+					console.log('OPTION', data, value, title);
 					s.push('<option ' + putAttr(data === value, 'selected') + '>' + title + '</option>');
 				});
 				s.push('</select>');
