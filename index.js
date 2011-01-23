@@ -24,18 +24,19 @@
 // FIXME: IE fails to render deeper than 2 array levels
 // FIXME: hardcoded id and some text
 // TODO: use Modernizr object to make defaults
-function obj2form(schema, data, path, entity){
+function obj2form(schema, data, path, entity, flavor){
 	function putAttr(value, attr){
 		return value ? attr + '="' + (value === true ? attr : value) + '" ' : '';
 	}
+	schema || (schema = {});
 	// FIXME: way rude
-	if (schema.readonly) return;
+	if (schema.readonly === true || typeof schema.readonly == 'object' && schema.readonly[flavor]) return;
 	if (!path) path = 'data';
 	var s = [];
 	if (schema.type === 'object' || schema.$ref instanceof Object || schema.type === 'array') {
-		s.push('<fieldset ' + putAttr(schema.description||entity, 'title') + '>');
+		s.push('<fieldset ' + putAttr(_.T(schema.description||'formEdit'+entity), 'title') + '>');
 		if (schema.title)
-			s.push('<legend>' + schema.title + '</legend>');
+			s.push('<legend>' + _.T('formEdit'+schema.title) + '</legend>');
 		// object
 		if (schema.type === 'object' || schema.$ref instanceof Object) {
 			if (schema.$ref instanceof Object) {
@@ -44,8 +45,7 @@ function obj2form(schema, data, path, entity){
 			// top level object ID
 			var schema = schema.properties;
 			for (var name in schema) if (schema.hasOwnProperty(name)) { var def = schema[name];
-				////s.push(obj2form(def, data && data[name], path ? path+'.'+name : name));
-				s.push(obj2form(def, data && data[name], path ? path+'['+name+']' : name, entity));
+				s.push(obj2form(def, data && data[name], path ? path+'['+name+']' : name, entity, flavor));
 			}
 		// array: provide sort/add/delete
 		} else {
@@ -55,15 +55,14 @@ function obj2form(schema, data, path, entity){
 			var array = data || [undefined];
 			for (var i = 0; i < array.length; ++i) {
 				s.push('<li class="array-item">');
-				/////s.push(obj2form(def, array[i], path+'['+i+']'));
-				s.push(obj2form(def, array[i], path+'[]', entity));
+				s.push(obj2form(def, array[i], path+'[]', entity, flavor));
 				// add/delete
 				// TODO: configurable text
 				s.push('<div class="array-action">');
-				s.push('<a class="array-action" rel="clone" href="#">'+_.T(entity+'_array_clone')+'</a>');
-				s.push('<a class="array-action" rel="remove" href="#">'+_.T(entity+'_array_remove')+'</a>');
-				s.push('<a class="array-action" rel="moveup" href="#">'+_.T(entity+'_array_moveup')+'</a>');
-				s.push('<a class="array-action" rel="movedown" href="#">'+_.T(entity+'_array_movedown')+'</a>');
+				s.push('<a class="array-action" rel="clone" href="#">'+_.T('formEditArrayClone')+'</a>');
+				s.push('<a class="array-action" rel="remove" href="#">'+_.T('formEditArrayRemove')+'</a>');
+				s.push('<a class="array-action" rel="moveup" href="#">'+_.T('formEditArrayMoveUp')+'</a>');
+				s.push('<a class="array-action" rel="movedown" href="#">'+_.T('formEditArrayMoveDown')+'</a>');
 				s.push('</div>');
 				s.push('</li>');
 			}
@@ -72,8 +71,8 @@ function obj2form(schema, data, path, entity){
 		s.push('</fieldset>');
 	} else {
 		s.push('<div class="field">');
-		//if (schema.title)
-			s.push('<label>' + _.T(entity+'_'+(schema.title||path)) + '</label>');
+		var label = 'formEdit'+entity+(path.replace('data','').replace(/\[(\w*)\]/g, function(hz, x){return x ? _.capitalize(x) : ''}));
+		s.push('<label>' + _.T(label) + '</label>');
 		var t, type = 'text';
 		var pattern = schema.pattern;
 		if ((t = schema.type) === 'number' || t === 'integer') {
@@ -134,7 +133,7 @@ function obj2form(schema, data, path, entity){
 			//s.push('<input type="' + type + '" data-type="' + type + '" name="' + path + '" ' +
 				putAttr(data && path === 'data[id]', 'readonly') +
 				putAttr(schema.description, 'title') +
-				putAttr(_.T(entity+'_'+(schema.title||path)), 'placeholder') +
+				putAttr(_.T(label + 'Placeholder'), 'placeholder') +
 				//putAttr(schema.optional !== true, 'required') +
 				putAttr(schema.minLength, 'minlength') +
 				putAttr(schema.maxLength, 'maxlength') +
